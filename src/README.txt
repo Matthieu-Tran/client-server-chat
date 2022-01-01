@@ -1,0 +1,1 @@
+Bonjour ceci est un projet de CPOA permettant de realiser une application client serveur
