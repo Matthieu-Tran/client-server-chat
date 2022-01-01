@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Arrays;
 
 
 public class ServerThread extends Thread {
@@ -40,6 +41,7 @@ public class ServerThread extends Thread {
                     //On lui retire de la liste des threads;
                     Main.listeThread.remove(this);
                     break;
+                    //C'est un test
                 }
                 //On envoie un message a tous les clients
                 printToALlClients(outputString);
@@ -49,7 +51,7 @@ public class ServerThread extends Thread {
                 Main.listeMessages.add(msg[1]);
             }
         } catch (Exception e) {
-            System.out.println("Error occured " +e.getStackTrace());
+            System.out.println(Arrays.toString(e.getStackTrace()));
         }
     }
     private void printToALlClients(String outputString) {
