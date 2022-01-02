@@ -2,7 +2,6 @@ package Serveur;
 
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 public class Main {
@@ -14,14 +13,14 @@ public class Main {
             while(true) {
                 Socket socket = serversocket.accept();
                 if(socket != null)
-                    System.out.println("Nouveau client connecté");
+                    System.out.println("Nouveau client connecte");
                 //ON commence le thread
                 ServerThread serverThread = new ServerThread(socket);
                 listeThread.add(serverThread);
                 serverThread.start();
             }
         } catch (Exception e) {
-            System.out.println("Error occured in main: " + Arrays.toString(e.getStackTrace()));
+            System.out.println("Error occurred in main: " + Arrays.toString(e.getStackTrace()));
         }
     }
 }

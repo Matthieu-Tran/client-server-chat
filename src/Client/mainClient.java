@@ -4,7 +4,7 @@ import java.net.Socket;
 import java.util.Scanner;
 public class mainClient {
     public static void main(String[] args){
-        Socket socket = null;
+        Socket socket;
         try {
             socket = new Socket("localhost", 5555);
             System.out.println("Connecte au serveur!");
