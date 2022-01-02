@@ -11,6 +11,7 @@ import java.util.Arrays;
 public class ServerThread extends Thread {
     final private Socket socket;
     private PrintWriter output;
+    private static final Object lock = new Object();
 
     public ServerThread(Socket socket) {
         this.socket = socket;
@@ -29,26 +30,30 @@ public class ServerThread extends Thread {
                 // On separe le pseudo et le message du client
                 String [] msg = outputString.split(": ", 2);
                 // Si l'utilisateur écrit "exit" ou bien envoie un message déja envoyé, il sera déconnecté
-                if(Main.listeMessages.contains(msg[1]) || msg[1].contains("exit")){
-                    System.out.println(msg[0] + " a ete deconnecte :(");
-                    if (Main.listeMessages.contains(msg[1]))
-                        output.println("Votre message a déja été envoyé, vous allez être déconnecté du serveur");
-                    else
-                        output.println("Robot9000 vous dit au revoir");
-                    //On envoie un message qui quand le client va le recevoir va etre deconnecte
-                    output.println(" Goodbye");
-                    socket.close();
-                    //On lui retire de la liste des threads;
-                    Main.listeThread.remove(this);
-                    break;
-                    //C'est un test
+                synchronized (lock){
+                    if(Main.listeMessages.contains(msg[1]) || msg[1].contains("exit")) {
+                        System.out.println(msg[0] + " a ete deconnecte :(");
+                        if (Main.listeMessages.contains(msg[1]))
+                            output.println("Votre message a déja été envoyé, vous allez être déconnecté du serveur");
+                        else
+                            output.println("Robot9000 vous dit au revoir");
+                        //On envoie un message qui quand le client va le recevoir va etre deconnecte
+                        output.println(" Goodbye");
+                        socket.close();
+                        //On lui retire de la liste des threads;
+                        Main.listeThread.remove(this);
+                        break;
+                        //C'est un test
+                    }
                 }
                 //On envoie un message a tous les clients
                 printToALlClients(outputString);
                 //On print dans la console du serveur ce que les clients ont envoye
                 System.out.println("Server received "  + outputString);
                 //On ajoute le message qu'a envoye un client dans le Hashset du main
-                Main.listeMessages.add(msg[1]);
+                synchronized (lock){
+                    Main.listeMessages.add(msg[1]);
+                }
             }
         } catch (Exception e) {
             System.out.println(Arrays.toString(e.getStackTrace()));
