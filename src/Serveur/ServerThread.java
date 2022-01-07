@@ -15,8 +15,7 @@ public class ServerThread extends Thread {
 
     public ServerThread(Socket socket) {
         this.socket = socket;
-    }
-
+}
     @Override
     public void run() {
         try {
@@ -31,6 +30,11 @@ public class ServerThread extends Thread {
                 String [] msg = outputString.split(": ", 2);
                 // Si l'utilisateur ecrit "exit" ou bien envoie un message deja envoye, il sera deconnecte
                 synchronized (lock){
+
+                    /*
+                    Si il y a un client qui a ferme sa socket, on gere cela
+                     */
+
                     if(Main.listeMessages.contains(msg[1]) || msg[1].contains("exit")) {
                         System.out.println(msg[0] + " a ete deconnecte :(");
                         if (Main.listeMessages.contains(msg[1]))
@@ -41,7 +45,8 @@ public class ServerThread extends Thread {
                         output.println(" Goodbye");
                         socket.close();
                         //On lui retire de la liste des threads;
-                        Main.listeThread.remove(this);
+                        Main.listeThreads.remove(this);
+                        Main.cptClients--;
                         break;
                         //C'est un test
                     }
@@ -50,6 +55,7 @@ public class ServerThread extends Thread {
                 printToALlClients(outputString);
                 //On print dans la console du serveur ce que les clients ont envoye
                 System.out.println("Server received "  + outputString);
+                System.out.println("Il y a: " + Main.cptClients + " clients connecte");
                 //On ajoute le message qu'a envoye un client dans le Hashset du main
                 synchronized (lock){
                 Main.listeMessages.add(msg[1]);
@@ -61,8 +67,8 @@ public class ServerThread extends Thread {
     }
     private void printToALlClients(String outputString) {
         System.out.println(Main.listeMessages);
-        System.out.println(Main.listeThread);
-        for( ServerThread sT: Main.listeThread) {
+        System.out.println(Main.listeThreads);
+        for( ServerThread sT: Main.listeThreads) {
             sT.output.println(outputString);
         }
     }
