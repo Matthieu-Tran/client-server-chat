@@ -1,9 +1,6 @@
 package Serveur;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.Arrays;
 
@@ -25,6 +22,12 @@ public class ServerThread extends Thread {
             output = new PrintWriter(socket.getOutputStream(),true);
             //inifite loop for server
             while(true) {
+                // Si le client s'est deconnecte, on quitte la boucle
+                if (socket.getInputStream().read()==-1){
+                    Main.listeThreads.remove(this);
+                    Main.cptClients--;
+                    break;
+                }
                 String outputString = reader.readLine();
                 // On separe le pseudo et le message du client
                 String [] msg = outputString.split(": ", 2);
@@ -63,6 +66,14 @@ public class ServerThread extends Thread {
             }
         } catch (Exception e) {
             System.out.println(Arrays.toString(e.getStackTrace()));
+        }
+        finally {
+            try {
+                // on ferme la socket
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
     private void printToALlClients(String outputString) {
