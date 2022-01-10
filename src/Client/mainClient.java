@@ -31,7 +31,7 @@ public class mainClient {
                     clientName = userInput;
                 }
                 else {
-                    String message = ( "(" + clientName + ")" + ": " );
+                    String message = ( " (" + clientName + ")" + ": " );
                     System.out.println(message);
                     userInput = scanner.nextLine();
                     writer.println(message + " " + userInput);

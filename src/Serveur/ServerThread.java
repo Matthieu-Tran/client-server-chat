@@ -24,21 +24,18 @@ public class ServerThread extends Thread {
             while(true) {
                 // Si le client s'est deconnecte, on quitte la boucle
                 if (socket.getInputStream().read()==-1){
-                    Main.listeThreads.remove(this);
-                    Main.cptClients--;
+                    synchronized (lock) {
+                        Main.listeThreads.remove(this);
+                        Main.cptClients--;
+                    }
                     break;
                 }
                 String outputString = reader.readLine();
                 // On separe le pseudo et le message du client
                 String [] msg = outputString.split(": ", 2);
                 // Si l'utilisateur ecrit "exit" ou bien envoie un message deja envoye, il sera deconnecte
-                synchronized (lock){
-
-                    /*
-                    Si il y a un client qui a ferme sa socket, on gere cela
-                     */
-
                     if(Main.listeMessages.contains(msg[1]) || msg[1].contains("exit")) {
+
                         System.out.println(msg[0] + " a ete deconnecte :(");
                         if (Main.listeMessages.contains(msg[1]))
                             output.println("Votre message a deja ete envoye, vous allez etre deconnecte du serveur");
@@ -48,17 +45,18 @@ public class ServerThread extends Thread {
                         output.println(" Goodbye");
                         socket.close();
                         //On lui retire de la liste des threads;
-                        Main.listeThreads.remove(this);
-                        Main.cptClients--;
+                        synchronized (lock){
+                            Main.listeThreads.remove(this);
+                            Main.cptClients--;
+                        }
                         break;
                         //C'est un test
                     }
-                }
                 //On envoie un message a tous les clients
                 printToALlClients(outputString);
                 //On print dans la console du serveur ce que les clients ont envoye
                 System.out.println("Server received "  + outputString);
-                System.out.println("Il y a: " + Main.cptClients + " clients connecte");
+                System.out.println("Il y a: " + Main.cptClients + " client(s) connecte");
                 //On ajoute le message qu'a envoye un client dans le Hashset du main
                 synchronized (lock){
                 Main.listeMessages.add(msg[1]);

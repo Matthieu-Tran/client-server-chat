@@ -1,6 +1,7 @@
 package Client;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
@@ -8,7 +9,8 @@ public class ClientRunnable implements Runnable {
     private final BufferedReader input;
 
     public ClientRunnable(Socket s) throws IOException {
-        this.input = new BufferedReader( new InputStreamReader(s.getInputStream()));
+        InputStream in = s.getInputStream();
+        this.input = new BufferedReader(new InputStreamReader(in));
     }
     @Override
     public void run() {
