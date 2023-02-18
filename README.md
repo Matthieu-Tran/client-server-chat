@@ -16,4 +16,4 @@ Start chatting!
 ## Usage
 Once the client is connected to the server, type a message and press enter to send it to the server. The server will broadcast the message to all connected clients.
 
-To disconnect from the chat, type "exit" and press enter.
+To disconnect from the chat, type "exit" and press enter. The user will be kicked from the server if he sends a message that has already been sent before
